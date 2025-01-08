@@ -40,7 +40,7 @@ class HistoryService {
 
 	// TODO: Define a getCities method that reads the cities from the searchHistory.json file and returns them as an array of City objects
 	async getCities() {
-		const cities = await this.read();
+		const cities: City[] = await this.read();
 		return cities;
 	}
 
@@ -66,7 +66,7 @@ class HistoryService {
 	async removeCity(id: string) {
 		const data = await this.getCities();
 		const filteredCities = data.filter(
-			(data: { id: string }) => data.id !== id
+			(city) => city.id !== id //city is an object in the data array (city is an iterative value)
 		); //why this data typing?
 		return await this.write(filteredCities);
 	}

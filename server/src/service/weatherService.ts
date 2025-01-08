@@ -41,23 +41,22 @@ class WeatherService {
 	// TODO: Define the baseURL, API key, and city name properties
 	private baseURL?: string;
 	private apiKey?: string;
-	cityName?: string;
+	private cityName: string = '';
 
 	constructor() {
 		this.baseURL = process.env.API_BASE_URL || '';
 		this.apiKey = process.env.API_KEY || '';
-		this.cityName = '';
 	}
 
 	// TODO: Create fetchLocationData method
-	private async fetchLocationData(query: string) {
+	private async fetchLocationData(query: string) { //set up promise to get JSON response back. Handle error catching.
 		const locationData = await fetch(query);
 		return locationData.json();
 	}
 
-	// TODO: Create destructureLocationData method
+	// TODO: Create destructureLocationData method //Handle errors (location data is not passed). Destructure data.
 	private destructureLocationData(locationData: Coordinates): Coordinates {
-		const { lat, lon } = locationData;
+		const { lat, lon } = locationData; //make more clear we are only grabbing lat & long in case it has other stuff in locationData object!
 		return { lat, lon };
 	}
 
@@ -72,19 +71,24 @@ class WeatherService {
 		return `${this.baseURL}/data/2.5/forecast?lat=${lat}&lon=${lon}&apiid=${this.apiKey}`;
 	}
 
-	// TODO: Create fetchAndDestructureLocationData method
-	private async fetchAndDestructureLocationData() {}
+	// TODO: Create fetchAndDestructureLocationData method //Call the fetchLocaitonData, chain a promise to destructure the data, return the destructured location data
+	private async fetchAndDestructureLocationData() {
+		const locationData = await this.fetchLocationData(this.cityName);
+		return this.destructureLocationData(locationData);
+	}
 
-	// TODO: Create fetchWeatherData method
-	private async fetchWeatherData(coordinates: Coordinates) {}
+	// TODO: Create fetchWeatherData method //fetch on weather query, do error handling, then get weather into a weather object via parseCurrrentWeather method. Get list of weather objects with buildForecaseArray method. Return forcast.
+	private async fetchWeatherData(coordinates: Coordinates) {
+		const weatherData = await fetch();
+	}
 
-	// TODO: Build parseCurrentWeather method
+	// TODO: Build parseCurrentWeather method //Create new weather object from response we are reading in. 
 	private parseCurrentWeather(response: any) {}
 
-	// TODO: Complete buildForecastArray method
+	// TODO: Complete buildForecastArray method //Filter weather data. If there is a time, filter to display that time/date. For each day of filtered weather, read it into an array of forcast objects. Create a list of weather objects.
 	private buildForecastArray(currentWeather: Weather, weatherData: any[]) {}
 
-	// TODO: Complete getWeatherForCity method
+	// TODO: Complete getWeatherForCity method //fetchAndDestructureLocationData to get coordinates. Call fetchWeatherData on coordinates. Error handling.
 	async getWeatherForCity(city: string) {}
 }
 
