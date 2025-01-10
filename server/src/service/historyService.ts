@@ -21,15 +21,19 @@ class HistoryService {
 				flag: 'a+',
 				encoding: 'utf8',
 			});
+			if (!data) {
+				return [];
+			}
 			return JSON.parse(data);
 		} catch (error) {
-			console.error('Error reading search history:', error);
+			console.error(error);
+			throw new Error('Error reading search history.');
 		}
 	}
 
 	// TODO: Define a write method that writes the updated cities array to the searchHistory.json file
 	private async write(cities: City[]) {
-		return await fs.promises.writeFile(
+		await fs.promises.writeFile(
 			'db/searchHistory.json',
 			JSON.stringify(cities, null, '\t')
 		);
@@ -45,19 +49,19 @@ class HistoryService {
 	}
 
 	// TODO: Define an addCity method that adds a city to the searchHistory.json file
-	async addCity(city: string) {
-		if (!city) {
+	async addCity(name: string) {
+		// async addCity(city: string) {
+		if (!name) {
 			throw new Error('city cannot be blank');
 		}
 
-		const newCity: City = { name: city, id: uuidv4() };
+		const newCity: City = { name, id: uuidv4() };
+		// const newCity: City = { name: city, id: uuidv4() };
 		const cities = await this.getCities();
 
-		if (cities.find((index: City) => index.name === city)) {
-			return cities;
-		} else {
-			// const updatedCities = [...cities, newCity];
+		if (cities.find((city) => city.name !== name)) {
 			const updatedCities = cities.concat(newCity);
+			// const updatedCities = [...cities, newCity];
 			this.write(updatedCities);
 		}
 	}
@@ -67,8 +71,8 @@ class HistoryService {
 		const data = await this.getCities();
 		const filteredCities = data.filter(
 			(city) => city.id !== id //city is an object in the data array (city is an iterative value)
-		); //why this data typing?
-		return await this.write(filteredCities);
+		);
+		await this.write(filteredCities);
 	}
 }
 

@@ -1,21 +1,38 @@
 import { Router, type Request, type Response } from 'express';
 const router = Router();
 
-// import HistoryService from '../../service/historyService.js';
+import HistoryService from '../../service/historyService.js';
 // import WeatherService from '../../service/weatherService.js';
+import {
+	CallableWeatherService,
+	// Weather,
+} from '../../service/weatherService.js';
 
 // TODO: POST Request with city name to retrieve weather data
-router.post('/:city', (req: Request, res: Response) => {
-  // TODO: GET weather data from city name
-  
-  // TODO: save city to search history
-
+router.post('/', async (req: Request, res: Response) => {
+	// TODO: GET weather data from city name
+	const city = req.body.cityName;
+	console.log('parsed city', city);
+	// let weather: Weather[] = [];
+	const weather = await CallableWeatherService.getWeatherForCity(city)
+	// TODO: save city to search history
+  HistoryService.addCity(city);
+  console.log('weather', weather);
+  // return weather;
+	return res.json(weather);
 });
 
 // TODO: GET search history
-router.get('/history', async (req: Request, res: Response) => {});
+router.get('/history', async (_req: Request, res: Response) => {
+	const cities = await HistoryService.getCities();
+	return res.json(cities);
+});
 
 // * BONUS TODO: DELETE city from search history
-router.delete('/history/:id', async (req: Request, res: Response) => {});
+router.delete('/history/:id', async (req: Request, res: Response) => {
+	const id = req.params.id;
+	HistoryService.removeCity(id);
+	return res.json(undefined); //to get a 204
+});
 
 export default router;
