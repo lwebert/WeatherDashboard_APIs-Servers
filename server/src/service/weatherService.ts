@@ -94,8 +94,6 @@ class WeatherService {
 	// //Call the fetchLocaitonData, chain a promise to destructure the data, return the destructured location data
 	private async fetchAndDestructureLocationData() {
 		const locationData = await this.fetchLocationData(this.cityName);
-		// console.log("fetchAndDestructureLocationData ~ locationData:", locationData);
-
 		return this.destructureLocationData(locationData.city.coord);
 	}
 
@@ -103,14 +101,11 @@ class WeatherService {
 	// //fetch on weather query, do error handling, then get weather into a weather object via parseCurrrentWeather method. Get list of weather objects with buildForecaseArray method. Return forcast.
 	private async fetchWeatherData(coordinates: Coordinates) {
 		const query = this.buildWeatherQuery(coordinates);
-		
+
 		let response: any;
 		try {
-			// response = await fetch(query);
 			const fetchResponse = await fetch(query);
 			response = await fetchResponse.json();
-
-			// console.log('fetchWeatherData ~ response:', response);
 
 			if (!response.list) {
 				console.error('No weather data available in the response');
@@ -121,48 +116,23 @@ class WeatherService {
 			throw new Error('Unable to fetch weather data.');
 		}
 
-		// console.log('fetchWeatherData ~ response:', response);
-
 		const currentWeather = this.parseCurrentWeather(response);
 
-		// const { weather, forecast } = await this.parseCurrentWeather(response);
-
-		const forecast = response.list;
-		return this.buildForecastArray(currentWeather, forecast);
+		// const forecast = response.list;
+		return this.buildForecastArray(currentWeather, response.list);
 	}
 
 	// TODO: Build parseCurrentWeather method //Create new weather object from response we are reading in.
 	private parseCurrentWeather(response: any) {
-		//stuck here!
 		//TODO: Test response format for correct parsing
-		
-		// const date = dayjs.unix(response.dt).format('M/D/YYYY');
-		// const newWeather = new Weather(
-		// 	this.cityName,
-		// 	date,
-		// 	response.weather.icon,
-		// 	response.weather.description,
-		// 	response.main.temp,
-		// 	response.wind.speed,
-		// 	response.list[0].main.humidity
-		// );
-
-		// response.list[0].weather
-
-		// const weatherData: any = await response.json(); //this is doing something similar to JSON.parse(response), but .json() method is asynchronous
-		// const weatherData: any = response; //this is doing something similar to JSON.parse(response), but .json() method is asynchronous
-		// const forecast = weatherData.list;
-		// if (!weatherData) {
-		// 	console.error('weatherData is undefined!');
-		// 	return
-		// }
 
 		const currentWeatherItem = response.list[0];
 
-		console.log("parseCurrentWeather ~ currentWeatherItem:", currentWeatherItem);
+		if (!currentWeatherItem || !currentWeatherItem.weather || !currentWeatherItem.main) {
+			throw new Error('Invalid current weather data!')
+		};
 
-
-		const currentWeather = new Weather(
+		return new Weather(
 			this.cityName,
 			dayjs.unix(currentWeatherItem.dt).format('M/D/YYYY'),
 			currentWeatherItem.weather[0].icon,
@@ -171,7 +141,6 @@ class WeatherService {
 			currentWeatherItem.wind.speed,
 			currentWeatherItem.main.humidity
 		);
-		return currentWeather;
 	}
 
 	// TODO: Complete buildForecastArray method
@@ -188,7 +157,7 @@ class WeatherService {
 			//get 6 days of weather, day 1=[0:6], i=[7:15] is day 2
 			// let weatherItem = weatherData[i];
 			let weatherItem = weatherDataFiltered[i];
-			
+
 			forecast.push(
 				new Weather(
 					this.cityName,

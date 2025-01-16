@@ -29,7 +29,7 @@ class HistoryService {
 			console.error(error);
 			throw new Error('Error reading search history.');
 		}
-	}
+	};
 
 	// TODO: Define a write method that writes the updated cities array to the searchHistory.json file
 	private async write(cities: City[]) {
