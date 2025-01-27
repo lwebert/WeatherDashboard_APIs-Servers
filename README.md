@@ -27,7 +27,7 @@ To install the application locally, do the following in your terminal:
 ## Usage
 To run the application locally, use the following command in your terminal: `npm run start:dev`.
 
-You can also utilize the deployed application via the following link: 
+You can also utilize the deployed application by clicking [here](https://challenge-09-weather-apis.onrender.com/).
 
 ## Contributing
 This application was developed by Lauren Webert. Here are some guidelines on ways to contribute:
