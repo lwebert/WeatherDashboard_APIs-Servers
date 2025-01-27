@@ -52,7 +52,6 @@ class WeatherService {
 	}
 
 	// TODO: Create fetchLocationData method
-	// private async fetchLocationData() {
 	private async fetchLocationData(query: string) {
 		//set up promise to get JSON response back. Handle error catching.
 		this.cityName = query;
@@ -69,13 +68,8 @@ class WeatherService {
 	}
 
 	// TODO: Create destructureLocationData method
-	// //Handle errors (location data is not passed). Destructure data.
 	private destructureLocationData(locationData: Coordinates): Coordinates {
-		//supposed to be this!!
-		// private destructureLocationData(locationData: any): Coordinates {
 		const { lat, lon } = locationData; //make more clear we are only grabbing lat & long in case it has other stuff in locationData object!
-
-		// const { lat, lon } = locationData.city.coord; //make more clear we are only grabbing lat & long in case it has other stuff in locationData object!
 		return { lat, lon };
 	}
 
@@ -91,14 +85,12 @@ class WeatherService {
 	}
 
 	// TODO: Create fetchAndDestructureLocationData method
-	// //Call the fetchLocaitonData, chain a promise to destructure the data, return the destructured location data
 	private async fetchAndDestructureLocationData() {
 		const locationData = await this.fetchLocationData(this.cityName);
 		return this.destructureLocationData(locationData.city.coord);
 	}
 
 	// TODO: Create fetchWeatherData method
-	// //fetch on weather query, do error handling, then get weather into a weather object via parseCurrrentWeather method. Get list of weather objects with buildForecaseArray method. Return forcast.
 	private async fetchWeatherData(coordinates: Coordinates) {
 		const query = this.buildWeatherQuery(coordinates);
 
@@ -118,19 +110,20 @@ class WeatherService {
 
 		const currentWeather = this.parseCurrentWeather(response);
 
-		// const forecast = response.list;
 		return this.buildForecastArray(currentWeather, response.list);
 	}
 
-	// TODO: Build parseCurrentWeather method //Create new weather object from response we are reading in.
+	// TODO: Build parseCurrentWeather method 
 	private parseCurrentWeather(response: any) {
-		//TODO: Test response format for correct parsing
-
 		const currentWeatherItem = response.list[0];
 
-		if (!currentWeatherItem || !currentWeatherItem.weather || !currentWeatherItem.main) {
-			throw new Error('Invalid current weather data!')
-		};
+		if (
+			!currentWeatherItem ||
+			!currentWeatherItem.weather ||
+			!currentWeatherItem.main
+		) {
+			throw new Error('Invalid current weather data!');
+		}
 
 		return new Weather(
 			this.cityName,
@@ -144,7 +137,6 @@ class WeatherService {
 	}
 
 	// TODO: Complete buildForecastArray method
-	// //Filter weather data. If there is a time, filter to display that time/date. For each day of filtered weather, read it into an array of forcast objects. Create a list of weather objects.
 	private buildForecastArray(currentWeather: Weather, weatherData: any[]) {
 		const forecast: Weather[] = [currentWeather];
 		console.log(weatherData[1]);
@@ -153,9 +145,7 @@ class WeatherService {
 		});
 
 		for (let i = 0; i < weatherDataFiltered.length; i++) {
-			// for (let i = 7; i < weatherData.length; i += 8) {
-			//get 6 days of weather, day 1=[0:6], i=[7:15] is day 2
-			// let weatherItem = weatherData[i];
+		
 			let weatherItem = weatherDataFiltered[i];
 
 			forecast.push(
@@ -175,7 +165,6 @@ class WeatherService {
 	}
 
 	// TODO: Complete getWeatherForCity method
-	// //fetchAndDestructureLocationData to get coordinates. Call fetchWeatherData on coordinates. Error handling.
 	async getWeatherForCity(city: string) {
 		this.cityName = city;
 		const coordinates = await this.fetchAndDestructureLocationData();

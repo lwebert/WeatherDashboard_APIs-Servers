@@ -37,9 +37,6 @@ class HistoryService {
 			'db/searchHistory.json',
 			JSON.stringify(cities, null, '\t')
 		);
-
-		// const data = JSON.stringify(cities, null, '\t');
-		// await fs.promises.writeFile('db/searchHistory.json', data);
 	}
 
 	// TODO: Define a getCities method that reads the cities from the searchHistory.json file and returns them as an array of City objects
@@ -56,11 +53,7 @@ class HistoryService {
 			throw new Error('city cannot be blank');
 		}
 		const newCity: City = { name, id: uuidv4() };
-		// const newCity: City = { name: city, id: uuidv4() };
 		const cities = await this.getCities();
-		// console.log(cities);
-		// console.log(!cities.find((city) => city.name !== name));
-		// console.log(!cities.find((city) => city.name === name));
 
 		if (!cities.find((city) => city.name === name)) { //.find method --> return Undefined if it doesn't find something matching what you pass in; if it finds it, will be true, but the ! makes it false, so it will not run the logic; if it doesn't find it, it will run the logic
 			// const updatedCities = cities.concat(newCity); //concat is meant to take 2+ arrays and create a new array from it, doesn't work with an array + object
